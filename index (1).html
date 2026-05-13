@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tangible — Wealth You Can Wear</title>
+<meta name="description" content="Tangible turns luxury goods into appreciating assets you actually possess. Buy fractional shares of watches, cars, wine, and art — and rotate physical custody with co-owners." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2ECE0;
+    --bg-warm: #EBE3D2;
+    --bg-card: #F8F3E8;
+    --ink: #15110B;
+    --ink-soft: #3A332A;
+    --ink-faded: #6B6052;
+    --rule: #1511101A;
+    --oxblood: #6E1F1F;
+    --oxblood-deep: #4D1414;
+    --brass: #A88B3F;
+    --brass-light: #C9AB5C;
+    --success: #2D5A3D;
+    --serif: "Fraunces", "Times New Roman", serif;
+    --sans: "Geist", system-ui, sans-serif;
+    --mono: "Geist Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(at 100% 0%, rgba(168, 139, 63, 0.08) 0%, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(110, 31, 31, 0.06) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* paper-grain overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+    mix-blend-mode: multiply;
+  }
+
+  .container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ==================== NAV ==================== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    background: rgba(242, 236, 224, 0.78);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  .brand {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 26px;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .brand::after {
+    content: "®";
+    font-size: 11px;
+    color: var(--brass);
+    font-style: normal;
+    vertical-align: super;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--oxblood); }
+  .nav-cta {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 13px !important;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--oxblood) !important;
+    color: var(--bg) !important;
+  }
+  @media (max-width: 720px) {
+    .nav-links a:not(.nav-cta) { display: none; }
+  }
+
+  /* ==================== HERO ==================== */
+  .hero {
+    padding: 80px 0 120px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin-bottom: 28px;
+    animation: fadeUp 0.7s 0.05s both;
+  }
+  .hero-eyebrow .dot {
+    width: 6px; height: 6px;
+    background: var(--oxblood);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  h1.hero-title {
+    font-family: var(--serif);
+    font-weight: 350;
+    font-size: clamp(56px, 9vw, 132px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin-bottom: 36px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    animation: fadeUp 0.8s 0.15s both;
+  }
+  h1.hero-title .ital {
+    font-style: italic;
+    font-weight: 300;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+    color: var(--oxblood);
+  }
+  h1.hero-title .underline {
+    position: relative;
+    display: inline-block;
+  }
+  h1.hero-title .underline::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0.08em;
+    height: 2px;
+    background: var(--brass);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .hero-sub {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    font-weight: 350;
+    max-width: 540px;
+    margin-bottom: 36px;
+    animation: fadeUp 0.8s 0.3s both;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.45s both;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .btn-primary:hover {
+    background: var(--oxblood);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(110, 31, 31, 0.25);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .btn-ghost:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* hero stats card */
+  .hero-card {
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+    padding: 32px;
+    position: relative;
+    animation: fadeUp 0.8s 0.5s both;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.5) inset,
+      0 12px 40px rgba(21,17,11,0.04);
+  }
+  .hero-card::before {
+    content: "01 / 04";
+    position: absolute;
+    top: 14px; right: 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-faded);
+    letter-spacing: 0.1em;
+  }
+  .hero-card-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 10px;
+  }
+  .hero-card-asset {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    font-variation-settings: "opsz" 96;
+  }
+  .hero-card-asset .ital { font-style: italic; color: var(--oxblood); }
+  .hero-card-meta {
+    font-size: 13px;
+    color: var(--ink-faded);
+    margin-bottom: 22px;
+  }
+  .hero-card-rows {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+  }
+  .hero-card-row { display: flex; flex-direction: column; gap: 4px; }
+  .hero-card-row .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+  }
+  .hero-card-row .v {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .hero-card-row .v.pos { color: var(--success); }
+  .hero-card-spark {
+    margin: 18px -8px 4px;
+    height: 60px;
+  }
+
+  /* ticker */
+  .ticker {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+    background: var(--bg-warm);
+    position: relative;
+    z-index: 2;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 56px;
+    padding: 14px 0;
+    white-space: nowrap;
+    animation: scroll 50s linear infinite;
+  }
+  .ticker-item {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ticker-item strong { color: var(--ink); font-weight: 600; }
+  .ticker-item .up { color: var(--success); }
+  .ticker-item .dn { color: var(--oxblood); }
+  @keyframes scroll {
+    to { transform: translateX(-50%); }
+  }
+
+  /* ==================== SECTION HEADERS ==================== */
+  section { padding: 120px 0; position: relative; z-index: 2; }
+  @media (max-width: 720px) { section { padding: 80px 0; } }
+  .section-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-eyebrow::before {
+    content: "";
+    width: 32px; height: 1px;
+    background: var(--oxblood);
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-weight: 350;
+    font-size: clamp(40px, 6vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+    max-width: 900px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .section-title .ital {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--oxblood);
+    font-variation-settings: "opsz" 144, "SOFT" 80;
+  }
+  .section-lead {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 680px;
+    font-weight: 350;
+  }
+
+  /* ==================== THESIS ==================== */
+  .thesis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    margin-top: 80px;
+    border: 1px solid var(--rule);
+  }
+  @media (max-width: 820px) { .thesis-grid { grid-template-columns: 1fr; } }
+  .thesis-cell {
+    background: var(--bg);
+    padding: 40px 32px;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .thesis-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--brass);
+    letter-spacing: 0.1em;
+  }
+  .thesis-cell h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 14px 0 12px;
+  }
+  .thesis-cell h3 .ital { font-style: italic; color: var(--oxblood); }
+  .thesis-cell p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* ==================== DEMO ==================== */
+  .demo-section {
+    background: var(--ink);
+    color: var(--bg);
+    margin: 0;
+    padding: 120px 0;
+  }
+  .demo-section .section-eyebrow { color: var(--brass-light); }
+  .demo-section .section-eyebrow::before { background: var(--brass-light); }
+  .demo-section .section-title { color: var(--bg); }
+  .demo-section .section-title .ital { color: var(--brass-light); }
+  .demo-section .section-lead { color: rgba(242, 236, 224, 0.7); }
+
+  .demo-app {
+    margin-top: 64px;
+    background: #1F1A12;
+    border: 1px solid rgba(168, 139, 63, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+  }
+  .demo-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(168, 139, 63, 0.15);
+  }
+  .demo-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .demo-dots { display: flex; gap: 6px; }
+  .demo-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .demo-url {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: rgba(242, 236, 224, 0.5);
+  }
+  .demo-url strong { color: var(--brass-light); }
+  .demo-balance {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: rgba(242, 236, 224, 0.6);
+  }
+  .demo-balance .bal-value {
+    color: var(--brass-light);
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .demo-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(168, 139, 63, 0.15);
+    background: rgba(0,0,0,0.15);
+  }
+  .demo-tab {
+    padding: 16px 28px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(242, 236, 224, 0.5);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: var(--sans);
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+  }
+  .demo-tab:hover { color: var(--bg); }
+  .demo-tab.active {
+    color: var(--brass-light);
+    border-bottom-color: var(--brass-light);
+    background: rgba(168, 139, 63, 0.05);
+  }
+  .demo-tab .badge {
+    margin-left: 8px;
+    background: var(--oxblood);
+    color: var(--bg);
+    border-radius: 999px;
+    padding: 2px 7px;
+    font-size: 10px;
+  }
+
+  .demo-body {
+    padding: 32px;
+    min-height: 520px;
+  }
+  .demo-panel { display: none; }
+  .demo-panel.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* asset grid */
+  .asset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .asset-card {
+    background: rgba(242, 236, 224, 0.03);
+    border: 1px solid rgba(168, 139, 63, 0.15);
+    border-radius: 4px;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+  }
+  .asset-card:hover {
+    border-color: var(--brass-light);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  }
+  .asset-visual {
+    height: 160px;
+    background: linear-gradient(135deg, #2A2117 0%, #15110B 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(168, 139, 63, 0.15);
+  }
+  .asset-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(168, 139, 63, 0.18), transparent 60%);
+  }
+  .asset-visual svg {
+    width: 70px;
+    height: 70px;
+    color: var(--brass-light);
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+  }
+  .asset-year-tag {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--brass-light);
+    background: rgba(0,0,0,0.5);
+    padding: 4px 8px;
+    border: 1px solid rgba(168, 139, 63, 0.3);
+  }
+  .asset-cat-tag {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: rgba(242, 236, 224, 0.5);
+    text-transform: uppercase;
+  }
+  .asset-info {
+    padding: 18px 18px 20px;
+  }
+  .asset-name {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    color: var(--bg);
+  }
+  .asset-name .ital { font-style: italic; color: var(--brass-light); }
+  .asset-prov {
+    font-size: 11px;
+    color: rgba(242, 236, 224, 0.4);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .asset-stats {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid rgba(168, 139, 63, 0.1);
+    margin-bottom: 14px;
+  }
+  .asset-stat { display: flex; flex-direction: column; gap: 2px; }
+  .asset-stat .k {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(242, 236, 224, 0.4);
+  }
+  .asset-stat .v {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--bg);
+  }
+  .asset-stat .v.pos { color: #6FB880; }
+
+  .share-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(168, 139, 63, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .share-btn {
+    background: transparent;
+    border: none;
+    color: var(--brass-light);
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: background 0.15s;
+  }
+  .share-btn:hover { background: rgba(168, 139, 63, 0.15); }
+  .share-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .share-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--bg);
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 0;
+    width: 60px;
+  }
+  .share-input:focus { outline: none; }
+  .share-buy {
+    background: var(--brass);
+    color: var(--ink);
+    border: none;
+    padding: 9px 14px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .share-buy:hover { background: var(--brass-light); }
+  .share-buy:disabled {
+    background: rgba(168, 139, 63, 0.2);
+    color: rgba(242, 236, 224, 0.3);
+    cursor: not-allowed;
+  }
+  .asset-availability {
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(242, 236, 224, 0.4);
+    text-transform: uppercase;
+  }
+  .availability-bar {
+    height: 3px;
+    background: rgba(168, 139, 63, 0.15);
+    margin-top: 6px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .availability-fill {
+    height: 100%;
+    background: var(--brass);
+    transition: width 0.4s;
+  }
+
+  /* portfolio panel */
+  .portfolio-empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: rgba(242, 236, 224, 0.4);
+  }
+  .portfolio-empty p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: rgba(242, 236, 224, 0.6);
+  }
+  .portfolio-empty span {
+    font-size: 13px;
+  }
+
+  .portfolio-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(168, 139, 63, 0.15);
+    border: 1px solid rgba(168, 139, 63, 0.15);
+    margin-bottom: 32px;
+  }
+  @media (max-width: 720px) { .portfolio-summary { grid-template-columns: repeat(2, 1fr); } }
+  .summary-cell {
+    background: rgba(0,0,0,0.2);
+    padding: 22px 20px;
+  }
+  .summary-cell .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(242, 236, 224, 0.4);
+    margin-bottom: 8px;
+  }
+  .summary-cell .v {
+    font-family: var(--serif);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--bg);
+    font-weight: 400;
+  }
+  .summary-cell .v.pos { color: #6FB880; }
+  .summary-cell .sub {
+    font-size: 11px;
+    color: rgba(242, 236, 224, 0.5);
+    margin-top: 4px;
+  }
+
+  .holdings-list { display: flex; flex-direction: column; gap: 14px; }
+  .holding {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 22px;
+    align-items: center;
+    background: rgba(242, 236, 224, 0.03);
+    border: 1px solid rgba(168, 139, 63, 0.15);
+    padding: 20px;
+    transition: all 0.2s;
+  }
+  .holding:hover { border-color: rgba(168, 139, 63, 0.35); }
+  @media (max-width: 720px) {
+    .holding { grid-template-columns: 1fr; gap: 14px; }
+  }
+  .holding-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #2A2117, #15110B);
+    border: 1px solid rgba(168, 139, 63, 0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brass-light);
+    border-radius: 2px;
+  }
+  .holding-icon svg { width: 28px; height: 28px; }
+  .holding-info .name {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--bg);
+    margin-bottom: 3px;
+  }
+  .holding-info .name .ital { font-style: italic; color: var(--brass-light); }
+  .holding-info .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(242, 236, 224, 0.5);
+    letter-spacing: 0.05em;
+  }
+  .holding-value { text-align: right; }
+  .holding-value .amt {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--bg);
+  }
+  .holding-value .gain {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #6FB880;
+    margin-top: 2px;
+  }
+  .holding-rotation { text-align: right; }
+  .holding-rotation .days {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass-light);
+  }
+  .holding-rotation .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(242, 236, 224, 0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* rotation calendar */
+  .calendar-wrap {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(168, 139, 63, 0.15);
+    padding: 32px;
+  }
+  .calendar-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--bg);
+    margin-bottom: 6px;
+  }
+  .calendar-title .ital { font-style: italic; color: var(--brass-light); }
+  .calendar-sub {
+    font-size: 13px;
+    color: rgba(242, 236, 224, 0.5);
+    margin-bottom: 28px;
+  }
+  .calendar {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .cal-asset {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+  }
+  .cal-bar {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2px;
+    height: 28px;
+  }
+  .cal-month {
+    background: rgba(168, 139, 63, 0.08);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .cal-month.owned {
+    background: var(--brass);
+  }
+  .cal-month.owned:hover { background: var(--brass-light); }
+  .cal-labels {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .cal-months {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(242, 236, 224, 0.4);
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  /* market preview ticker for demo */
+  .market-bar {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(168, 139, 63, 0.15);
+  }
+  .market-bar::-webkit-scrollbar { height: 4px; }
+  .market-bar::-webkit-scrollbar-thumb { background: rgba(168, 139, 63, 0.3); }
+  .market-pill {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(242, 236, 224, 0.6);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .market-pill strong { color: var(--bg); }
+  .market-pill .ch.up { color: #6FB880; }
+  .market-pill .ch.dn { color: #C97070; }
+
+  /* notification toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--ink);
+    color: var(--bg);
+    border: 1px solid var(--brass);
+    padding: 16px 22px;
+    font-size: 14px;
+    z-index: 1000;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    max-width: 360px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(0); }
+  .toast strong {
+    color: var(--brass-light);
+    font-family: var(--serif);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ==================== HOW IT WORKS ==================== */
+  .how-grid {
+    margin-top: 72px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  @media (max-width: 820px) { .how-grid { grid-template-columns: 1fr; } }
+  .how-step {
+    background: var(--bg-card);
+    padding: 40px;
+    border: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .how-step::before {
+    content: attr(data-step);
+    position: absolute;
+    top: -20px; right: -8px;
+    font-family: var(--serif);
+    font-size: 180px;
+    font-weight: 200;
+    color: rgba(110, 31, 31, 0.06);
+    line-height: 1;
+    font-style: italic;
+  }
+  .how-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--oxblood);
+    letter-spacing: 0.16em;
+    margin-bottom: 14px;
+  }
+  .how-step h3 {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .how-step h3 .ital { font-style: italic; color: var(--oxblood); }
+  .how-step p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.65;
+    max-width: 460px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ==================== FAQ ==================== */
+  .faq-wrap {
+    margin-top: 60px;
+    max-width: 880px;
+  }
+  .faq-item {
+    border-top: 1px solid var(--rule);
+    padding: 24px 0;
+  }
+  .faq-item:last-child { border-bottom: 1px solid var(--rule); }
+  .faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    user-select: none;
+  }
+  .faq-q .ital { font-style: italic; color: var(--oxblood); }
+  .faq-q .plus {
+    font-family: var(--serif);
+    font-size: 26px;
+    color: var(--oxblood);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    margin-left: 20px;
+  }
+  .faq-item.open .faq-q .plus { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.65;
+    max-width: 700px;
+  }
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding-top: 16px;
+  }
+
+  /* ==================== CTA / FOOTER ==================== */
+  .cta {
+    text-align: center;
+    padding: 140px 0 100px;
+    position: relative;
+  }
+  .cta::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 0;
+    width: 1px; height: 80px;
+    background: var(--brass);
+    transform: translateX(-50%);
+  }
+  .cta h2 {
+    font-family: var(--serif);
+    font-size: clamp(48px, 8vw, 110px);
+    font-weight: 350;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 36px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .cta h2 .ital {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--oxblood);
+    font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+  }
+  .cta p {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--ink-soft);
+    max-width: 540px;
+    margin: 0 auto 40px;
+  }
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 48px 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+  .footer-brand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 64px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+  .footer-meta {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faded);
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+  }
+  .footer-meta .legal { font-size: 10px; letter-spacing: 0.1em; }
+
+  /* utility */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="brand">Tangible</a>
+    <div class="nav-links">
+      <a href="#thesis">Thesis</a>
+      <a href="#demo">Marketplace</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#demo" class="nav-cta">Open Account</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <span class="dot"></span> Series A · Backed by Slow Capital
+    </div>
+
+    <h1 class="hero-title">
+      Wealth<br>
+      you can <span class="ital">wear<span class="underline">.</span></span>
+    </h1>
+
+    <div class="hero-grid">
+      <div>
+        <p class="hero-sub">
+          Tangible turns investment-grade objects — vintage watches, classic cars, fine wine, blue-chip sneakers — into fractional, appreciating assets you actually possess. Buy shares. Rotate physical custody. Compound enjoyment, not just capital.
+        </p>
+        <div class="hero-actions">
+          <a href="#demo" class="btn btn-primary">
+            Open the marketplace
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#thesis" class="btn btn-ghost">Read the thesis</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-card-label">Featured · Live</div>
+        <div class="hero-card-asset">1968 Rolex<br><span class="ital">Submariner 5513</span></div>
+        <div class="hero-card-meta">Box & papers · Service 2024 · Geneva vault</div>
+
+        <svg class="hero-card-spark" viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="sparkGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#A88B3F" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#A88B3F" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,45 L25,42 L50,40 L75,38 L100,33 L125,28 L150,30 L175,22 L200,18 L225,20 L250,12 L275,8 L300,4 L300,60 L0,60 Z" fill="url(#sparkGrad)"/>
+          <path d="M0,45 L25,42 L50,40 L75,38 L100,33 L125,28 L150,30 L175,22 L200,18 L225,20 L250,12 L275,8 L300,4" stroke="#A88B3F" stroke-width="1.6" fill="none"/>
+        </svg>
+
+        <div class="hero-card-rows">
+          <div class="hero-card-row">
+            <div class="k">Current</div>
+            <div class="v">$58,400</div>
+          </div>
+          <div class="hero-card-row">
+            <div class="k">5-yr CAGR</div>
+            <div class="v pos">+8.4%</div>
+          </div>
+          <div class="hero-card-row">
+            <div class="k">Min share</div>
+            <div class="v">$292</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item"><strong>SUB.5513</strong> $58,400 <span class="up">▲ 0.42%</span></span>
+    <span class="ticker-item"><strong>PAT.5711</strong> $185,300 <span class="up">▲ 1.18%</span></span>
+    <span class="ticker-item"><strong>MUSTGT.67</strong> $145,000 <span class="dn">▼ 0.21%</span></span>
+    <span class="ticker-item"><strong>AJ1.CHI85</strong> $42,150 <span class="up">▲ 2.04%</span></span>
+    <span class="ticker-item"><strong>LAFITE.82</strong> $32,200 <span class="up">▲ 0.31%</span></span>
+    <span class="ticker-item"><strong>BIRKIN.30G</strong> $28,900 <span class="up">▲ 0.62%</span></span>
+    <span class="ticker-item"><strong>FERR.308GTS</strong> $94,000 <span class="dn">▼ 0.08%</span></span>
+    <span class="ticker-item"><strong>HONUS.T206</strong> $1.2M <span class="up">▲ 0.91%</span></span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><strong>SUB.5513</strong> $58,400 <span class="up">▲ 0.42%</span></span>
+    <span class="ticker-item"><strong>PAT.5711</strong> $185,300 <span class="up">▲ 1.18%</span></span>
+    <span class="ticker-item"><strong>MUSTGT.67</strong> $145,000 <span class="dn">▼ 0.21%</span></span>
+    <span class="ticker-item"><strong>AJ1.CHI85</strong> $42,150 <span class="up">▲ 2.04%</span></span>
+    <span class="ticker-item"><strong>LAFITE.82</strong> $32,200 <span class="up">▲ 0.31%</span></span>
+    <span class="ticker-item"><strong>BIRKIN.30G</strong> $28,900 <span class="up">▲ 0.62%</span></span>
+    <span class="ticker-item"><strong>FERR.308GTS</strong> $94,000 <span class="dn">▼ 0.08%</span></span>
+    <span class="ticker-item"><strong>HONUS.T206</strong> $1.2M <span class="up">▲ 0.91%</span></span>
+  </div>
+</div>
+
+<!-- THESIS -->
+<section id="thesis">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">The Thesis</div>
+      <h2 class="section-title">
+        Vaulted wealth is <span class="ital">dead wealth.</span>
+      </h2>
+      <p class="section-lead">
+        Existing fractional platforms lock luxury goods in climate-controlled rooms forever. We think that's a category error. The point of a Rolex is to be worn. The point of a '67 Mustang is to be driven. Tangible is the first platform that lets you do both — generate alpha and live with it.
+      </p>
+    </div>
+
+    <div class="thesis-grid">
+      <div class="thesis-cell reveal">
+        <div>
+          <div class="thesis-num">01 ·  PROBLEM</div>
+          <h3>The vault <span class="ital">paradox.</span></h3>
+        </div>
+        <p>Alt-asset platforms force you to choose between ownership and enjoyment. A Patek you can't wear is a chart on a screen. We solve for both at once.</p>
+      </div>
+      <div class="thesis-cell reveal">
+        <div>
+          <div class="thesis-num">02 ·  SOLUTION</div>
+          <h3>Rotational <span class="ital">custody.</span></h3>
+        </div>
+        <p>Own 25% of a watch? You get 91 days a year with it on your wrist. Smart contracts handle the schedule. Insured shipping handles the logistics.</p>
+      </div>
+      <div class="thesis-cell reveal">
+        <div>
+          <div class="thesis-num">03 ·  EDGE</div>
+          <h3>Provenance <span class="ital">verified.</span></h3>
+        </div>
+        <p>Every asset is authenticated by independent experts, GPS-tracked during transit, and insured to full appraised value. Possession is logged on-chain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo" class="demo-section">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">Live Marketplace</div>
+      <h2 class="section-title">Take it for <span class="ital">a spin.</span></h2>
+      <p class="section-lead">A working demo. You start with $10,000 in mock capital. Browse the catalog, allocate shares, and watch your portfolio — and rotation calendar — fill in.</p>
+    </div>
+
+    <div class="demo-app reveal">
+      <div class="demo-toolbar">
+        <div class="demo-toolbar-left">
+          <div class="demo-dots"><span></span><span></span><span></span></div>
+          <div class="demo-url">app.tangible.co/<strong>marketplace</strong></div>
+        </div>
+        <div class="demo-balance">
+          Cash balance · <span class="bal-value" id="balance">$10,000</span>
+          <button id="resetBtn" style="background:transparent;border:1px solid rgba(168,139,63,0.3);color:rgba(242,236,224,0.6);font-family:var(--mono);font-size:10px;padding:5px 10px;cursor:pointer;letter-spacing:0.08em;margin-left:8px;">RESET</button>
+        </div>
+      </div>
+
+      <div class="demo-tabs">
+        <button class="demo-tab active" data-tab="marketplace">Marketplace</button>
+        <button class="demo-tab" data-tab="portfolio">Portfolio <span class="badge" id="holdCount" style="display:none;">0</span></button>
+        <button class="demo-tab" data-tab="rotation">Rotation</button>
+      </div>
+
+      <div class="demo-body">
+
+        <!-- MARKETPLACE -->
+        <div class="demo-panel active" data-panel="marketplace">
+          <div class="market-bar" id="marketBar"></div>
+          <div class="asset-grid" id="assetGrid"></div>
+        </div>
+
+        <!-- PORTFOLIO -->
+        <div class="demo-panel" data-panel="portfolio">
+          <div id="portfolioContent"></div>
+        </div>
+
+        <!-- ROTATION -->
+        <div class="demo-panel" data-panel="rotation">
+          <div id="rotationContent"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">Operating Model</div>
+      <h2 class="section-title">Four steps. <span class="ital">No vault.</span></h2>
+    </div>
+
+    <div class="how-grid">
+      <div class="how-step reveal" data-step="1">
+        <div>
+          <div class="how-num">STEP ONE</div>
+          <h3>Source &amp; <span class="ital">authenticate.</span></h3>
+        </div>
+        <p>Our specialists source pieces with documented provenance. Each item is authenticated by an independent panel — three experts must agree before listing.</p>
+      </div>
+      <div class="how-step reveal" data-step="2">
+        <div>
+          <div class="how-num">STEP TWO</div>
+          <h3>Fractionalize &amp; <span class="ital">underwrite.</span></h3>
+        </div>
+        <p>Assets are securitized into 100 shares. Each share grants pro-rata economic exposure and pro-rata physical access. Full-value insurance is included.</p>
+      </div>
+      <div class="how-step reveal" data-step="3">
+        <div>
+          <div class="how-num">STEP THREE</div>
+          <h3>Rotate &amp; <span class="ital">enjoy.</span></h3>
+        </div>
+        <p>Your share % converts to days per year. The schedule auto-allocates based on demand and seasonality. Insured concierge shipping moves the asset to you.</p>
+      </div>
+      <div class="how-step reveal" data-step="4">
+        <div>
+          <div class="how-num">STEP FOUR</div>
+          <h3>Exit on <span class="ital">your terms.</span></h3>
+        </div>
+        <p>Sell shares to other members on the secondary market — or vote with co-owners to liquidate the entire asset at appraisal. Median holding period: 3.4 years.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">Frequently Asked</div>
+      <h2 class="section-title">Questions, <span class="ital">answered.</span></h2>
+    </div>
+
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-q">What happens if I <span class="ital">damage</span> the asset?<span class="plus">+</span></div>
+        <div class="faq-a">Every asset carries comprehensive policy coverage to full appraised value, with normal wear-and-tear allowances calibrated by category. Deductibles vary; for watches, the first $250 of repair per custody period is on the active holder. We've never lost an asset to damage.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How is <span class="ital">authenticity</span> verified?<span class="plus">+</span></div>
+        <div class="faq-a">Three independent specialists must independently authenticate each item. Watches go through movement inspection; cars get a 230-point provenance review; sneakers are X-rayed and chemically tested. Every transfer is logged immutably.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I <span class="ital">sell</span> my shares early?<span class="plus">+</span></div>
+        <div class="faq-a">Yes. Tangible operates a continuous secondary market with weekly settlement. You can list any portion of your position at any time. Typical bid-ask spreads run 1.5–3% for liquid assets.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What's the <span class="ital">fee</span> structure?<span class="plus">+</span></div>
+        <div class="faq-a">2% sourcing fee on purchase, 1% AUM annually (covers insurance, storage, and concierge logistics), and a 10% performance fee on realized gains. No fees on rotation custody — that's the whole point.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is this an <span class="ital">SEC-registered</span> security?<span class="plus">+</span></div>
+        <div class="faq-a">Each asset is offered under Reg A+ or Reg D depending on size and accreditation. Disclosures, offering circulars, and audited financials are published per filing requirements. Tangible is a registered broker-dealer member of FINRA and SIPC.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <h2>Some things are <span class="ital">meant</span><br>to be <span class="ital">held.</span></h2>
+    <p>Beta access opens this fall. Join the waitlist — the first thousand members get fee-free sourcing for life.</p>
+    <a href="#demo" class="btn btn-primary">Reserve your place</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">Tangible®</div>
+      <div class="footer-meta">
+        © 2026 TANGIBLE HOLDINGS, INC.<br>
+        MEMBER FINRA · SIPC · INSURED BY LLOYDS<br>
+        <span class="legal">SECURITIES OFFERED UNDER REG A+ · NOT INVESTMENT ADVICE</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <strong id="toastTitle">Order filled</strong>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ============================================================
+//  ASSET CATALOG
+// ============================================================
+const ICONS = {
+  watch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"/><polyline points="12 9 12 12 13.5 13.5"/><path d="M9 4l1-2h4l1 2"/><path d="M9 20l1 2h4l1-2"/></svg>',
+  car:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5a2 2 0 012-1.5h10a2 2 0 012 1.5l2 5"/><rect x="2" y="13" width="20" height="5" rx="1"/><circle cx="6.5" cy="18.5" r="1.5"/><circle cx="17.5" cy="18.5" r="1.5"/></svg>',
+  bag:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1 12H5L4 8z"/><path d="M8 8V6a4 4 0 018 0v2"/></svg>',
+  wine:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8v6a4 4 0 01-4 4 4 4 0 01-4-4V2z"/><line x1="12" y1="12" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>',
+  sneaker:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17l2-5 4-2 3-4h4l1 4 6 2 1 5H2z"/><line x1="7" y1="14" x2="9" y2="14"/><line x1="11" y1="13" x2="13" y2="13"/></svg>',
+  card:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="1"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>'
+};
+
+const ASSETS = [
+  { id:'sub5513', cat:'watch', icon:'watch', name:'Rolex <span class="ital">Submariner 5513</span>', year:1968, value:58400, cagr:8.4, available:62, prov:'Box & papers · Geneva vault' },
+  { id:'pat5711', cat:'watch', icon:'watch', name:'Patek Philippe <span class="ital">Nautilus 5711</span>', year:2019, value:185300, cagr:11.7, available:34, prov:'Unworn · Sealed plastics' },
+  { id:'must67',  cat:'car',   icon:'car',   name:'Ford <span class="ital">Mustang Fastback GT</span>', year:1967, value:145000, cagr:6.2, available:71, prov:'Marti report · 38k miles' },
+  { id:'aj1chi',  cat:'sneaker', icon:'sneaker', name:'Air Jordan 1 <span class="ital">Chicago</span>', year:1985, value:42150, cagr:14.3, available:48, prov:'Deadstock · OG box' },
+  { id:'lafite82',cat:'wine',  icon:'wine',  name:'Château Lafite <span class="ital">Rothschild</span>', year:1982, value:32200, cagr:7.1, available:83, prov:'12-bottle OWC · Bordeaux' },
+  { id:'birkin',  cat:'bag',   icon:'bag',   name:'Hermès <span class="ital">Birkin 30 Togo</span>', year:2021, value:28900, cagr:9.8, available:55, prov:'Gold hardware · Receipt' },
+  { id:'fer308',  cat:'car',   icon:'car',   name:'Ferrari <span class="ital">308 GTS</span>', year:1981, value:94000, cagr:5.5, available:67, prov:'Classiche certified' },
+  { id:'t206',    cat:'card',  icon:'card',  name:'Honus Wagner <span class="ital">T206 (PSA 3)</span>', year:1909, value:1240000, cagr:13.2, available:12, prov:'Population: 57 known' }
+];
+
+const SHARES_TOTAL = 100;
+const STARTING_BAL = 10000;
+let balance = STARTING_BAL;
+let portfolio = {};           // { assetId: shares }
+let avgCost   = {};           // { assetId: avgPricePerShare }
+let priceDelta = {};          // simulated live drift
+
+// ============================================================
+//  RENDERING
+// ============================================================
+const fmt = n => n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+const fmt2 = n => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const shortPrice = p => p >= 1000000 ? '$' + (p/1000000).toFixed(2) + 'M' : '$' + fmt(p);
+
+function sharePrice(asset) {
+  const drift = priceDelta[asset.id] || 0;
+  return Math.round((asset.value / SHARES_TOTAL) * (1 + drift) * 100) / 100;
+}
+
+function currentAssetValue(asset) {
+  const drift = priceDelta[asset.id] || 0;
+  return asset.value * (1 + drift);
+}
+
+function renderMarket() {
+  const bar = document.getElementById('marketBar');
+  bar.innerHTML = ASSETS.map(a => {
+    const d = (priceDelta[a.id] || 0) * 100;
+    const cls = d >= 0 ? 'up' : 'dn';
+    const arrow = d >= 0 ? '▲' : '▼';
+    return `<div class="market-pill"><strong>${a.id.toUpperCase()}</strong> ${shortPrice(currentAssetValue(a))} <span class="ch ${cls}">${arrow} ${Math.abs(d).toFixed(2)}%</span></div>`;
+  }).join('');
+}
+
+function renderAssets() {
+  const grid = document.getElementById('assetGrid');
+  grid.innerHTML = ASSETS.map(a => {
+    const owned = portfolio[a.id] || 0;
+    const sp = sharePrice(a);
+    const maxBuyable = Math.min(a.available, Math.floor(balance / sp));
+    return `
+      <div class="asset-card" data-id="${a.id}">
+        <div class="asset-visual">
+          <span class="asset-year-tag">${a.year}</span>
+          <span class="asset-cat-tag">${a.cat}</span>
+          ${ICONS[a.icon]}
+        </div>
+        <div class="asset-info">
+          <div class="asset-name">${a.name}</div>
+          <div class="asset-prov">${a.prov}</div>
+          <div class="asset-stats">
+            <div class="asset-stat"><span class="k">Value</span><span class="v">${shortPrice(currentAssetValue(a))}</span></div>
+            <div class="asset-stat"><span class="k">5y CAGR</span><span class="v pos">+${a.cagr}%</span></div>
+            <div class="asset-stat"><span class="k">/Share</span><span class="v">$${fmt(sp)}</span></div>
+          </div>
+          <div class="share-control">
+            <button class="share-btn" data-action="dec" data-id="${a.id}">−</button>
+            <input class="share-input" type="text" readonly value="0 sh" data-input="${a.id}">
+            <button class="share-btn" data-action="inc" data-id="${a.id}" ${maxBuyable===0?'disabled':''}>+</button>
+            <button class="share-buy" data-action="buy" data-id="${a.id}" disabled>Buy</button>
+          </div>
+          <div class="asset-availability">
+            ${owned > 0 ? `You own ${owned}/${SHARES_TOTAL} sh · ` : ''}${a.available} of ${SHARES_TOTAL} available
+            <div class="availability-bar"><div class="availability-fill" style="width:${a.available}%"></div></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // wire controls
+  grid.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', handleAction);
+  });
+}
+
+// pending share buys (before "Buy" is clicked)
+const pending = {};
+
+function handleAction(e) {
+  const btn = e.currentTarget;
+  const id = btn.dataset.id;
+  const action = btn.dataset.action;
+  const asset = ASSETS.find(a => a.id === id);
+  const sp = sharePrice(asset);
+  const maxBuyable = Math.min(asset.available, Math.floor(balance / sp));
+
+  if (action === 'inc') {
+    pending[id] = Math.min((pending[id] || 0) + 1, maxBuyable);
+  } else if (action === 'dec') {
+    pending[id] = Math.max((pending[id] || 0) - 1, 0);
+  } else if (action === 'buy') {
+    const sh = pending[id] || 0;
+    if (sh === 0) return;
+    const cost = sh * sp;
+    if (cost > balance) return;
+    balance -= cost;
+    const prevSh = portfolio[id] || 0;
+    const prevCost = (avgCost[id] || 0) * prevSh;
+    portfolio[id] = prevSh + sh;
+    avgCost[id] = (prevCost + cost) / portfolio[id];
+    asset.available = Math.max(0, asset.available - sh);
+    pending[id] = 0;
+    showToast('Order filled', `${sh} share${sh>1?'s':''} of ${stripHtml(asset.name)} acquired for $${fmt2(cost)}.`);
+    renderAll();
+    return;
+  }
+  // update only the affected card UI
+  const card = document.querySelector(`.asset-card[data-id="${id}"]`);
+  const input = card.querySelector('[data-input]');
+  const buy = card.querySelector('[data-action="buy"]');
+  const sh = pending[id] || 0;
+  input.value = sh + ' sh · $' + fmt(sh * sp);
+  buy.disabled = sh === 0;
+  buy.textContent = sh === 0 ? 'Buy' : 'Buy $' + fmt(sh * sp);
+}
+
+function stripHtml(s) { return s.replace(/<[^>]+>/g, ''); }
+
+function renderPortfolio() {
+  const root = document.getElementById('portfolioContent');
+  const holdings = Object.entries(portfolio).filter(([_, sh]) => sh > 0);
+  const count = holdings.length;
+  const badge = document.getElementById('holdCount');
+  if (count > 0) { badge.style.display = 'inline-block'; badge.textContent = count; }
+  else { badge.style.display = 'none'; }
+
+  if (holdings.length === 0) {
+    root.innerHTML = `
+      <div class="portfolio-empty">
+        <p>"The best returns wear well."</p>
+        <span>Your portfolio is empty. Head to the marketplace.</span>
+      </div>`;
+    return;
+  }
+
+  // summary
+  let totalValue = 0, totalCost = 0, daysPerYear = 0;
+  holdings.forEach(([id, sh]) => {
+    const a = ASSETS.find(x => x.id === id);
+    totalValue += sh * sharePrice(a);
+    totalCost += sh * (avgCost[id] || sharePrice(a));
+    daysPerYear += (sh / SHARES_TOTAL) * 365;
+  });
+  const totalGain = totalValue - totalCost;
+  const totalGainPct = totalCost > 0 ? (totalGain / totalCost) * 100 : 0;
+
+  root.innerHTML = `
+    <div class="portfolio-summary">
+      <div class="summary-cell">
+        <div class="k">Portfolio value</div>
+        <div class="v">$${fmt2(totalValue)}</div>
+        <div class="sub">+ cash $${fmt2(balance)}</div>
+      </div>
+      <div class="summary-cell">
+        <div class="k">Unrealized P/L</div>
+        <div class="v ${totalGain>=0?'pos':''}">${totalGain>=0?'+':'−'}$${fmt2(Math.abs(totalGain))}</div>
+        <div class="sub">${totalGainPct>=0?'+':''}${totalGainPct.toFixed(2)}%</div>
+      </div>
+      <div class="summary-cell">
+        <div class="k">Positions</div>
+        <div class="v">${holdings.length}</div>
+        <div class="sub">of 8 available</div>
+      </div>
+      <div class="summary-cell">
+        <div class="k">Custody / yr</div>
+        <div class="v">${Math.round(daysPerYear)} <span style="font-size:14px;color:rgba(242,236,224,0.5);">days</span></div>
+        <div class="sub">across all assets</div>
+      </div>
+    </div>
+
+    <div class="holdings-list">
+      ${holdings.map(([id, sh]) => {
+        const a = ASSETS.find(x => x.id === id);
+        const sp = sharePrice(a);
+        const value = sh * sp;
+        const cost = sh * (avgCost[id] || sp);
+        const gain = value - cost;
+        const gainPct = cost > 0 ? (gain/cost)*100 : 0;
+        const days = Math.round((sh/SHARES_TOTAL) * 365);
+        return `
+          <div class="holding">
+            <div class="holding-icon">${ICONS[a.icon]}</div>
+            <div class="holding-info">
+              <div class="name">${a.name}</div>
+              <div class="meta">${sh}/${SHARES_TOTAL} SHARES · ${a.year} · ${a.cat.toUpperCase()}</div>
+            </div>
+            <div class="holding-value">
+              <div class="amt">$${fmt2(value)}</div>
+              <div class="gain" style="color:${gain>=0?'#6FB880':'#C97070'}">${gain>=0?'+':'−'}$${fmt2(Math.abs(gain))} · ${gainPct>=0?'+':''}${gainPct.toFixed(1)}%</div>
+            </div>
+            <div class="holding-rotation">
+              <div class="days">${days} days</div>
+              <div class="label">your custody</div>
+            </div>
+          </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderRotation() {
+  const root = document.getElementById('rotationContent');
+  const holdings = Object.entries(portfolio).filter(([_, sh]) => sh > 0);
+
+  if (holdings.length === 0) {
+    root.innerHTML = `
+      <div class="portfolio-empty">
+        <p>"A schedule is just a calendar with purpose."</p>
+        <span>Allocate shares to populate your rotation.</span>
+      </div>`;
+    return;
+  }
+
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+  // for each holding, compute which months are "yours" based on share %.
+  // 100 shares = 12 months. shares -> roughly (shares/100)*12 months.
+  // distribute the owned months stably starting from a hash of the asset id.
+  const rows = holdings.map(([id, sh]) => {
+    const a = ASSETS.find(x => x.id === id);
+    const ownedMonths = Math.max(1, Math.round((sh/SHARES_TOTAL) * 12));
+    // deterministic start month from id
+    let start = 0; for (const c of id) start = (start + c.charCodeAt(0)) % 12;
+    const months12 = Array(12).fill(false);
+    for (let i = 0; i < ownedMonths; i++) months12[(start + i) % 12] = true;
+    return { id, asset: a, months12, sh };
+  });
+
+  root.innerHTML = `
+    <div class="calendar-wrap">
+      <div class="calendar-title">2026 Custody <span class="ital">Calendar</span></div>
+      <div class="calendar-sub">Brass blocks show months when the asset ships to you. Empty blocks rotate to co-owners. Schedule auto-balances each January.</div>
+
+      ${rows.map(r => `
+        <div class="calendar">
+          <div class="cal-asset">${r.asset.name.replace(/<[^>]+>/g,'').split(' ').slice(0,3).join(' ')}</div>
+          <div class="cal-bar">
+            ${r.months12.map((on,i) => `<div class="cal-month ${on?'owned':''}" title="${months[i]}${on?' — yours':''}"></div>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+
+      <div class="cal-labels">
+        <div></div>
+        <div class="cal-months">${months.map(m=>`<span>${m}</span>`).join('')}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAll() {
+  document.getElementById('balance').textContent = '$' + fmt2(balance);
+  renderMarket();
+  renderAssets();
+  renderPortfolio();
+  renderRotation();
+}
+
+// ============================================================
+//  TABS
+// ============================================================
+document.querySelectorAll('.demo-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    const target = t.dataset.tab;
+    document.querySelectorAll('.demo-tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.demo-panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(`.demo-panel[data-panel="${target}"]`).classList.add('active');
+    if (target === 'portfolio') renderPortfolio();
+    if (target === 'rotation') renderRotation();
+  });
+});
+
+// ============================================================
+//  RESET
+// ============================================================
+document.getElementById('resetBtn').addEventListener('click', () => {
+  balance = STARTING_BAL;
+  portfolio = {};
+  avgCost = {};
+  Object.keys(pending).forEach(k => pending[k] = 0);
+  // restore availabilities
+  const orig = [62,34,71,48,83,55,67,12];
+  ASSETS.forEach((a,i) => a.available = orig[i]);
+  renderAll();
+  showToast('Account reset', 'Cash balance restored to $10,000.00. Marketplace inventory replenished.');
+});
+
+// ============================================================
+//  TOAST
+// ============================================================
+let toastTimer;
+function showToast(title, msg) {
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3600);
+}
+
+// ============================================================
+//  PRICE DRIFT (live market feel)
+// ============================================================
+function tickPrices() {
+  ASSETS.forEach(a => {
+    const prev = priceDelta[a.id] || 0;
+    // small mean-reverting walk
+    const step = (Math.random() - 0.5) * 0.004;
+    const reversion = -prev * 0.06;
+    priceDelta[a.id] = prev + step + reversion;
+  });
+  // light DOM updates
+  if (document.querySelector('.demo-panel[data-panel="marketplace"]').classList.contains('active')) {
+    renderMarket();
+    // update visible per-share prices without rebuilding cards entirely
+    document.querySelectorAll('.asset-card').forEach(card => {
+      const id = card.dataset.id;
+      const a = ASSETS.find(x => x.id === id);
+      const sp = sharePrice(a);
+      const stats = card.querySelectorAll('.asset-stat .v');
+      stats[0].textContent = shortPrice(currentAssetValue(a));
+      stats[2].textContent = '$' + fmt(sp);
+    });
+  }
+}
+setInterval(tickPrices, 2400);
+
+// ============================================================
+//  FAQ
+// ============================================================
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.closest('.faq-item');
+    item.classList.toggle('open');
+  });
+});
+
+// ============================================================
+//  REVEAL ON SCROLL
+// ============================================================
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ============================================================
+//  INIT
+// ============================================================
+renderAll();
+</script>
+
+</body>
+</html>
